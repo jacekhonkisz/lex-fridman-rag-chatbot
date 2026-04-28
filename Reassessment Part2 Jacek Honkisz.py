@@ -1,3 +1,27 @@
+# =========================================================
+# Assessment/runtime conclusion:
+#
+# This app implements a complete Retrieval-Augmented Generation pipeline:
+# transcript loading, text chunking, sentence-transformer embeddings,
+# Chroma vector storage, semantic retrieval, RAG prompt construction,
+# local Ollama generation, Streamlit chat UI, and retrieved source display.
+#
+# Two Ollama models are available:
+# - mistral: the default assessment-aligned model, stronger but slower.
+# - llama3.2:1b: faster model used for live testing and constrained environments.
+#
+# Both models use the same RAG pipeline. The model selector only changes the
+# local Ollama generation model, not the retrieval architecture.
+#
+# Streamlit Cloud does not run Ollama by default. To make the public app generate
+# answers, OLLAMA_URL must point to a reachable Ollama endpoint. For testing,
+# Ollama was run in Colab and exposed through a temporary Cloudflare tunnel.
+# For local assessment execution, run:
+#   ollama pull mistral
+#   ollama serve
+#   streamlit run "Reassessment Part2 Jacek Honkisz.py"
+# =========================================================
+
 
 import os
 import re
@@ -36,6 +60,7 @@ st.set_page_config(
 )
 
 FULL_NAME = "Jacek Honkisz"
+STREAMLIT_APP_LINK = "https://lex-fridman-rag-chatbot-85qnuxvdwcd43ginzbjs96.streamlit.app"
 
 COLLECTION_NAME = "lex_fridman_podcast"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
@@ -45,8 +70,14 @@ CHUNK_SIZE_WORDS = 700
 CHUNK_OVERLAP_WORDS = 100
 TOP_K = 3
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
-DEFAULT_OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral")
+try:
+    OLLAMA_URL = st.secrets.get("OLLAMA_URL", os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate"))
+except Exception:
+    OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
+try:
+    DEFAULT_OLLAMA_MODEL = st.secrets.get("OLLAMA_MODEL", os.getenv("OLLAMA_MODEL", "mistral"))
+except Exception:
+    DEFAULT_OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral")
 
 AVAILABLE_OLLAMA_MODELS = [
     "mistral",
@@ -341,6 +372,7 @@ st.write(
 with st.sidebar:
     st.header("Project details")
     st.write(f"Author: {FULL_NAME}")
+    st.write(f"Published app: {STREAMLIT_APP_LINK}")
     st.write("Vector database: Chroma")
     st.write(f"Embedding model: {EMBEDDING_MODEL_NAME}")
     default_index = (
