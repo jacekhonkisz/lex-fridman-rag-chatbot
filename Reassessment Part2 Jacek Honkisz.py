@@ -20,7 +20,7 @@ import kagglehub
 # Author: Jacek Honkisz
 #
 # Streamlit app link:
-# PASTE_YOUR_STREAMLIT_APP_LINK_HERE
+# https://lex-fridman-rag-chatbot-85qnuxvdwcd43ginzbjs96.streamlit.app
 #
 # Local run instructions:
 # 1. Install Ollama
@@ -324,10 +324,11 @@ def answer_question(query, top_k=3, model_name=DEFAULT_OLLAMA_MODEL):
         answer = generate_with_ollama(prompt, model_name=model_name)
     except Exception as e:
         answer = (
-            "The retrieval pipeline is working, but the selected local Ollama model could not be reached or timed out. "
-            "Make sure Ollama is running and the selected model has been pulled. "
-            f"Selected model: {model_name}. "
-            f"Technical error: {e}"
+            "The retrieval pipeline is working and relevant transcript sources were found. "
+            "However, full answer generation requires a local Ollama server. "
+            "On Streamlit Cloud, localhost does not connect to a local laptop or Colab Ollama instance. "
+            "To run full generation locally, use: ollama pull mistral, ollama serve, then streamlit run this file. "
+            f"Selected model: {model_name}."
         )
 
     return answer, retrieved_chunks
