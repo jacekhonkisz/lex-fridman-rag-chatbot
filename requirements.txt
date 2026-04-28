@@ -6,3 +6,4 @@ chromadb
 sentence-transformers
 kagglehub
 tqdm
+protobuf==3.20.3
