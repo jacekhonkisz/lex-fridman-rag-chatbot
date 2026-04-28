@@ -50,14 +50,12 @@ DEFAULT_OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral")
 
 AVAILABLE_OLLAMA_MODELS = [
     "mistral",
-    "llama3.2:1b",
-    "tinyllama"
+    "llama3.2:1b"
 ]
 
 MODEL_NOTES = {
-    "mistral": "Best assessment-aligned option, but slow in Colab CPU/weak GPU environments.",
-    "llama3.2:1b": "Recommended for Colab testing. Much faster while still using local Ollama.",
-    "tinyllama": "Fastest fallback model. Useful for proving the pipeline on weak hardware."
+    "mistral": "Default assessment-aligned Ollama model. Better quality, but slower in Colab or low-resource environments.",
+    "llama3.2:1b": "Faster Ollama model for live testing and Streamlit Cloud/Colab demonstrations."
 }
 
 PROJECT_DIR = Path.cwd()
